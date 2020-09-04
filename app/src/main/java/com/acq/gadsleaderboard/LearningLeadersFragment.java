@@ -16,6 +16,7 @@ import com.acq.gadsleaderboard.Models.LearningLeadersModel;
 import com.acq.gadsleaderboard.Services.LearningLeadersService;
 import com.acq.gadsleaderboard.Services.NetworkConnectionInterceptor;
 import com.acq.gadsleaderboard.Services.NoConnectivityException;
+import com.acq.gadsleaderboard.Services.RetrofitService;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.net.UnknownHostException;
@@ -42,17 +43,7 @@ public class LearningLeadersFragment extends Fragment {
         mRecyclerView = learningLeadersView.findViewById(R.id.learning_leaders_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new NetworkConnectionInterceptor(getContext()))
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        LearningLeadersService learningLeadersService =  retrofit.create(LearningLeadersService.class);
+        LearningLeadersService learningLeadersService =  RetrofitService.retrofitInit(baseUrl, getContext()).create(LearningLeadersService.class);
         Call<List<LearningLeadersModel>> call = learningLeadersService.getLearningLeaders();
 
         call.enqueue( new Callback<List<LearningLeadersModel>>() {
@@ -61,9 +52,7 @@ public class LearningLeadersFragment extends Fragment {
                 if (!response.isSuccessful()){
                     Snackbar.make(learningLeadersView, "Error fetching data", Snackbar.LENGTH_LONG).show();
                 }else {
-                    Snackbar.make(learningLeadersView, "Data successfully fetched", Snackbar.LENGTH_LONG).show();
-                    mAdapter = new LearningLeadersAdapter(getContext() ,response.body());
-                    mRecyclerView.setAdapter(mAdapter);
+                    mRecyclerView.setAdapter(new LearningLeadersAdapter(getContext() ,response.body()));
                 }
             }
 
@@ -76,7 +65,9 @@ public class LearningLeadersFragment extends Fragment {
                 Snackbar.make(learningLeadersView, "Error contacting server", Snackbar.LENGTH_LONG).show();
             }
         });
-
         return learningLeadersView;
+
     }
+
+
 }
