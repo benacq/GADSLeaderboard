@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LEADERBOARD</string>
+    <string name="learning_leaders_text">Learning Leaders</string>
+    <string name="skill_iq_leaders_text">Skill IQ Leaders</string>
+    <string name="top_learner_image_content_description">Top Learner Image</string>
+    <string name="learner_name_text">John Doe</string>
+    <string name="learner_country_text">Ghana</string>
+    <string name="learner_hours_text">233 learning hours,</string>
+    <string name="loading_data_description">Loading data</string>
+</resources>
