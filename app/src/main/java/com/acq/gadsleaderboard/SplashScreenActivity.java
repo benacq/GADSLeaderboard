@@ -31,7 +31,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             Intent intent = new Intent(SplashScreenActivity.this, LeaderBoardActivity.class);
             startActivity(intent);
-            SplashScreenActivity.this.fileList();
+            SplashScreenActivity.this.finish();
         };
     }
 
