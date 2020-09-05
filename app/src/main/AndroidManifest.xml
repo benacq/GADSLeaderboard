@@ -14,7 +14,7 @@
 
         <activity
             android:name=".SubmitActivity"
-            android:windowSoftInputMode="adjustPan|stateVisible"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".SplashScreenActivity">
