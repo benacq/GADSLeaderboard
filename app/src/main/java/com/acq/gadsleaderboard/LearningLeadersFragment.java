@@ -32,25 +32,36 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LearningLeadersFragment extends Fragment {
     LearningLeadersAdapter mAdapter;
     RecyclerView mRecyclerView;
-
+    private View mLearningLeadersView;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View learningLeadersView = inflater.inflate(R.layout.learning_leaders_fragment, container, false);
+        mLearningLeadersView = inflater.inflate(R.layout.learning_leaders_fragment, container, false);
+
         String baseUrl = "https://gadsapi.herokuapp.com/";
-        mRecyclerView = learningLeadersView.findViewById(R.id.learning_leaders_recycler_view);
+        mRecyclerView = mLearningLeadersView.findViewById(R.id.learning_leaders_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         LearningLeadersService learningLeadersService =  RetrofitService.retrofitInit(baseUrl, getContext()).create(LearningLeadersService.class);
         Call<List<LearningLeadersModel>> call = learningLeadersService.getLearningLeaders();
 
+        getLeadersData(call);
+
+        return mLearningLeadersView;
+
+    }
+
+
+
+
+    void getLeadersData(Call<List<LearningLeadersModel>> call){
         call.enqueue( new Callback<List<LearningLeadersModel>>() {
             @Override
             public void onResponse(@NonNull Call<List<LearningLeadersModel>> call, @NonNull Response<List<LearningLeadersModel>> response) {
                 if (!response.isSuccessful()){
-                    Snackbar.make(learningLeadersView, "Error fetching data", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mLearningLeadersView, "Error fetching data", Snackbar.LENGTH_LONG).show();
                 }else {
                     mRecyclerView.setAdapter(new LearningLeadersAdapter(getContext() ,response.body()));
                 }
@@ -59,14 +70,12 @@ public class LearningLeadersFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<List<LearningLeadersModel>> call, @NonNull Throwable t) {
                 if (t instanceof NoConnectivityException || t instanceof UnknownHostException){
-                    Snackbar.make(learningLeadersView, "No internet", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(mLearningLeadersView, "No internet", Snackbar.LENGTH_LONG).show();
                     return;
                 }
-                Snackbar.make(learningLeadersView, "Error contacting server", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mLearningLeadersView, "Error contacting server", Snackbar.LENGTH_LONG).show();
             }
         });
-        return learningLeadersView;
-
     }
 
 

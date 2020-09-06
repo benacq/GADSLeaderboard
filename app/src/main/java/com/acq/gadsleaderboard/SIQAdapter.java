@@ -10,33 +10,35 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.acq.gadsleaderboard.Models.IQLeadersModel;
 import com.acq.gadsleaderboard.Models.LearningLeadersModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class LearningLeadersAdapter extends RecyclerView.Adapter<LearningLeadersAdapter.ViewHolder> {
+public class SIQAdapter extends RecyclerView.Adapter<SIQAdapter.ViewHolder> {
+
+
     private LayoutInflater mLayoutInflater;
-    private List<LearningLeadersModel> mLeadersModels;
+    private List<IQLeadersModel> mLeadersModels;
 
-    LearningLeadersAdapter(Context context, List<LearningLeadersModel> learningLeadersModels){
+    SIQAdapter(Context context, List<IQLeadersModel> siqLeadersModel){
         this.mLayoutInflater = LayoutInflater.from(context);
-        mLeadersModels = learningLeadersModels;
+        mLeadersModels = siqLeadersModel;
     }
-
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SIQAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.learning_leaders_custom_view, parent, false);
-        return new ViewHolder(view);
+        return new SIQAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+    public void onBindViewHolder(@NonNull SIQAdapter.ViewHolder holder, int position) {
         String learnerName = mLeadersModels.get(position).getName();
-        String learnerHours = Integer.toString(mLeadersModels.get(position).getHours()) +" learning hours, ";
+        String learnerScore = Integer.toString(mLeadersModels.get(position).getScore()) +" Skill IQ Score, ";
         String learnerCountry = mLeadersModels.get(position).getCountry();
         String badgeUrl = mLeadersModels.get(position).getBadgeUrl();
 
@@ -46,7 +48,7 @@ public class LearningLeadersAdapter extends RecyclerView.Adapter<LearningLeaders
                 .into(holder.learnerBadge);
 
         holder.learnerName.setText(learnerName);
-        holder.learnerHours.setText(learnerHours);
+        holder.learnerScore.setText(learnerScore);
         holder.learnerCountry.setText(learnerCountry);
     }
 
@@ -55,14 +57,15 @@ public class LearningLeadersAdapter extends RecyclerView.Adapter<LearningLeaders
         return mLeadersModels.size();
     }
 
+
     public static class ViewHolder extends  RecyclerView.ViewHolder{
-        TextView learnerName, learnerHours, learnerCountry;
+        TextView learnerName, learnerScore, learnerCountry;
         ImageView learnerBadge;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             learnerName = itemView.findViewById(R.id.learner_name);
-            learnerHours = itemView.findViewById(R.id.learner_detail);
+            learnerScore = itemView.findViewById(R.id.learner_detail);
             learnerCountry = itemView.findViewById(R.id.learner_country);
             learnerBadge = itemView.findViewById(R.id.learner_badge);
 

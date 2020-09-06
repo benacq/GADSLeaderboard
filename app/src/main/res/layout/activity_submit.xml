@@ -2,19 +2,20 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/submit_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@drawable/form_bg"
+    android:fitsSystemWindows="true"
     tools:context=".SubmitActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:paddingTop="10dp"
         android:layout_height="wrap_content"
+        android:background="@null"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:paddingTop="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,15 +29,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                >
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
                 <ImageView
                     android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="55dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/gads"
-                    android:contentDescription="@string/gads_logo_description"/>
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/gads_logo_description"
+                    android:src="@drawable/transparent_gads" />
             </androidx.appcompat.widget.Toolbar>
 
             <TextView
@@ -54,7 +55,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_scrolling" />
