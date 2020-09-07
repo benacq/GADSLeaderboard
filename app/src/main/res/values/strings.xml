@@ -105,4 +105,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="submission_not_successful_text">Submission not Successful</string>
+    <string name="submission_not_successful_img_description">Submission not successful</string>
+    <string name="submission_successful_img_description">Project Submitted</string>
+    <string name="submission_successful_text">Submission Successful</string>
 </resources>

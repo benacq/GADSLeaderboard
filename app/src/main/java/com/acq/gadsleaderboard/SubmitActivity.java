@@ -1,5 +1,9 @@
 package com.acq.gadsleaderboard;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import com.acq.gadsleaderboard.Models.SubmissionModel;
@@ -16,12 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -29,6 +35,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SubmitActivity extends AppCompatActivity {
+//    Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,9 @@ public class SubmitActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
+
+//        mDialog = new Dialog(this);
 
         String baseUrl = "https://docs.google.com/forms/d/e/";
 
@@ -62,11 +72,11 @@ public class SubmitActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<SubmissionModel> call, @NonNull Response<SubmissionModel> response) {
                 if (!response.isSuccessful()){
-                    Snackbar.make(findViewById(R.id.submit_view), "Error sending data", Snackbar.LENGTH_LONG).show();
+                    showCustomDialog(R.layout.popup_error);
                     Log.d("ERROR LOG", "**************** ERROR SENDING DATA: "+ response.code() +" ********************");
                 }else {
+                    showCustomDialog(R.layout.popup_success);
                     Snackbar.make(findViewById(R.id.submit_view), "Data sent", Snackbar.LENGTH_LONG).show();
-
                 }
             }
 
@@ -79,5 +89,24 @@ public class SubmitActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.submit_view), "Error contacting server", Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+
+
+    private void showCustomDialog(int layout) {
+        //before inflating the custom alert dialog layout, we will get the current activity viewgroup
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+
+        //then we will inflate the custom alert dialog xml that we created
+        View dialogView = LayoutInflater.from(this).inflate(layout, viewGroup, false);
+
+        //Now we need an AlertDialog.Builder object
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //setting the view of the builder to our custom view that we already inflated
+        builder.setView(dialogView);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
