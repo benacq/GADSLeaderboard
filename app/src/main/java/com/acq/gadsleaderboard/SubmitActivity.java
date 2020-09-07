@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 
 import android.os.Bundle;
 
-import com.acq.gadsleaderboard.Services.RetrofitService;
 import com.acq.gadsleaderboard.Services.SubmissionService;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -37,7 +36,7 @@ public class SubmitActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_submit);
 
-        
+
         Button submitProject =(Button) findViewById(R.id.submit_project);
 
 
@@ -63,17 +62,15 @@ public class SubmitActivity extends AppCompatActivity {
                 .build().create(SubmissionService.class);
 
 
-        Call<ResponseBody> call = submissionService.submitProject("Test First Name","Test Last Name","test@gmail.com","https://developer.android.com/");
+        Call<ResponseBody> call = submissionService.submitProject(
+                firstNameTextView.getText().toString(),
+                lastNameTextView.getText().toString(),
+                emailTextView.getText().toString(),
+                githubTextView.getText().toString());
 //        getLeadersData(call);
 
 
-        submitProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                confirmDialog(R.layout.confirm_send).show();
-            }
-        });
+        submitProject.setOnClickListener(v -> confirmDialog().show());
 
 //        mCancelSubmission.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -136,9 +133,9 @@ public class SubmitActivity extends AppCompatActivity {
 
 
 
-    private AlertDialog confirmDialog(int layout) {
+    private AlertDialog confirmDialog() {
         ViewGroup viewGroup = findViewById(android.R.id.content);
-        View dialogView = LayoutInflater.from(this).inflate(layout, viewGroup, false);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.confirm_send, viewGroup, false);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
