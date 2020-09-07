@@ -1,61 +1,86 @@
 package com.acq.gadsleaderboard;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+
 import android.os.Bundle;
 
-import com.acq.gadsleaderboard.Models.SubmissionModel;
-import com.acq.gadsleaderboard.Models.SubmissionModel;
-import com.acq.gadsleaderboard.Services.LearningLeadersService;
-import com.acq.gadsleaderboard.Services.NoConnectivityException;
 import com.acq.gadsleaderboard.Services.RetrofitService;
 import com.acq.gadsleaderboard.Services.SubmissionService;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
-import java.net.UnknownHostException;
 import java.util.Objects;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SubmitActivity extends AppCompatActivity {
-//    Dialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_submit);
+
+        
+        Button submitProject =(Button) findViewById(R.id.submit_project);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
 
-//        mDialog = new Dialog(this);
+
+        TextView firstNameTextView = findViewById(R.id.first_name_submit);
+        TextView lastNameTextView = findViewById(R.id.last_name_submit);
+        TextView emailTextView = findViewById(R.id.email_submit);
+        TextView githubTextView = findViewById(R.id.github_link_submit);
+
+
+
 
         String baseUrl = "https://docs.google.com/forms/d/e/";
+        SubmissionService submissionService = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build().create(SubmissionService.class);
 
-        SubmissionService submissionService =  RetrofitService.retrofitInit(baseUrl, this).create(SubmissionService.class);
-        Call<SubmissionModel> call = submissionService.submitProject("Test First Name","Test Last Name","test@gmail.com","https://developer.android.com/");
-        getLeadersData(call);
 
+        Call<ResponseBody> call = submissionService.submitProject("Test First Name","Test Last Name","test@gmail.com","https://developer.android.com/");
+//        getLeadersData(call);
+
+
+        submitProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                confirmDialog(R.layout.confirm_send).show();
+            }
+        });
+
+//        mCancelSubmission.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                confirmDialog(R.layout.confirm_send).dismiss();
+//            }
+//        });
 
     }
 
@@ -67,25 +92,24 @@ public class SubmitActivity extends AppCompatActivity {
     }
 
 
-    void getLeadersData(Call<SubmissionModel> call){
-        call.enqueue( new Callback<SubmissionModel>() {
+    void getLeadersData(Call<ResponseBody> call){
+        call.enqueue( new Callback<ResponseBody>() {
             @Override
-            public void onResponse(@NonNull Call<SubmissionModel> call, @NonNull Response<SubmissionModel> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+
                 if (!response.isSuccessful()){
                     showCustomDialog(R.layout.popup_error);
-                    Log.d("ERROR LOG", "**************** ERROR SENDING DATA: "+ response.code() +" ********************");
+                    Log.d("ERROR LOG", "**************** ERROR SENDING DATA: "+ call.request().url() +" ********************");
                 }else {
                     showCustomDialog(R.layout.popup_success);
                     Snackbar.make(findViewById(R.id.submit_view), "Data sent", Snackbar.LENGTH_LONG).show();
+                    Log.d("SUCCESS LOG", "**************** ERROR SENDING DATA: "+ response.body() +" ********************");
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<SubmissionModel> call, @NonNull Throwable t) {
-                if (t instanceof NoConnectivityException || t instanceof UnknownHostException){
-                    Snackbar.make(findViewById(R.id.submit_view), "No internet", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                Log.d("ERROR LOG", "**************** ERROR SENDING DATA: "+ t.getMessage() +" ********************");
                 Snackbar.make(findViewById(R.id.submit_view), "Error contacting server", Snackbar.LENGTH_LONG).show();
             }
         });
@@ -108,5 +132,17 @@ public class SubmitActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+
+
+    private AlertDialog confirmDialog(int layout) {
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(this).inflate(layout, viewGroup, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        return builder.create();
     }
 }

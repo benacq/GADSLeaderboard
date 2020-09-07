@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import com.acq.gadsleaderboard.Models.IQLeadersModel;
 import com.acq.gadsleaderboard.Models.LearningLeadersModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
@@ -28,6 +30,10 @@ public class RetrofitService {
 
     public static Retrofit retrofitInit(String baseUrl, Context context){
         if (mRetrofit == null){
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(new NetworkConnectionInterceptor(context))
                     .build();
@@ -35,7 +41,7 @@ public class RetrofitService {
             mRetrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
     return mRetrofit;
